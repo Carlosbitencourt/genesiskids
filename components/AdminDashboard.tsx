@@ -19,6 +19,8 @@ const AdminDashboard: React.FC = () => {
   const [editingPlan, setEditingPlan] = useState<CreditPlan | null>(null);
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'user'>('all');
   const [isLoading, setIsLoading] = useState(false);
+  const [initialCredits, setInitialCredits] = useState<number>(5);
+  const [isUpdatingSetting, setIsUpdatingSetting] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -46,6 +48,17 @@ const AdminDashboard: React.FC = () => {
       }));
 
       setUsers(mappedUsers);
+
+      // Fetch settings
+      const { data: settingsData } = await supabase
+        .from('app_settings')
+        .select('value')
+        .eq('key', 'initial_credits')
+        .single();
+
+      if (settingsData) {
+        setInitialCredits(parseInt(settingsData.value));
+      }
     } catch (err: any) {
       alert('Erro ao carregar dados: ' + err.message);
     } finally {
@@ -107,6 +120,28 @@ const AdminDashboard: React.FC = () => {
       const newPlans = plans.filter(p => p.id !== id);
       authService.savePlans(newPlans);
       setPlans(newPlans);
+    }
+  };
+
+  const handleUpdateSetting = async (key: string, value: string) => {
+    setIsUpdatingSetting(true);
+    try {
+      const { error } = await supabase
+        .from('app_settings')
+        .update({ value, updated_at: new Date().toISOString() })
+        .eq('key', key);
+
+      if (error) throw error;
+
+      if (key === 'initial_credits') {
+        setInitialCredits(parseInt(value));
+      }
+
+      alert('Configuração salva com sucesso!');
+    } catch (err: any) {
+      alert('Erro ao salvar configuração: ' + err.message);
+    } finally {
+      setIsUpdatingSetting(false);
     }
   };
 
@@ -387,7 +422,23 @@ const AdminDashboard: React.FC = () => {
                     <div className="font-bold text-slate-700">Créditos Iniciais</div>
                     <div className="text-xs text-slate-400">Quantidade de bônus para novos cadastros.</div>
                   </div>
-                  <div className="font-black text-amber-600 text-lg bg-white px-4 py-1 rounded-xl shadow-sm border border-amber-50">5</div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="number"
+                      min="0"
+                      className="w-20 text-center font-black text-amber-600 text-lg bg-white px-2 py-1 rounded-xl shadow-sm border border-amber-100 focus:border-amber-400 outline-none"
+                      value={initialCredits}
+                      onChange={(e) => setInitialCredits(parseInt(e.target.value) || 0)}
+                    />
+                    <button
+                      onClick={() => handleUpdateSetting('initial_credits', initialCredits.toString())}
+                      disabled={isUpdatingSetting}
+                      className="p-2 bg-amber-100 text-amber-600 rounded-lg hover:bg-amber-200 transition-colors disabled:opacity-50"
+                      title="Salvar"
+                    >
+                      {isUpdatingSetting ? <RefreshCw size={18} className="animate-spin" /> : <Save size={18} />}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
