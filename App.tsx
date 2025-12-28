@@ -11,7 +11,9 @@ import CreditShop from './components/CreditShop';
 import UserProfile from './components/UserProfile';
 import { generateBiblicalAnimeImage } from './services/geminiService';
 import { authService } from './services/authService';
-import { GeneratedImage, User, AppTab } from './types';
+import { abacatepayService } from './services/abacatepayService';
+import PixPaymentModal from './components/PixPaymentModal';
+import { GeneratedImage, User, AppTab, PixData } from './types';
 import { AlertCircle, Coins } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -23,6 +25,8 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+  const [pixData, setPixData] = useState<PixData | null>(null);
+  const [isPixModalOpen, setIsPixModalOpen] = useState(false);
 
   useEffect(() => {
     const initSession = async () => {
@@ -103,15 +107,30 @@ const App: React.FC = () => {
 
   const handlePurchase = async (amount: number) => {
     if (!user) return;
-    const updatedUser = { ...user, credits: user.credits + amount };
-    setUser(updatedUser);
+
+    setIsLoading(true);
     try {
-      await authService.updateUser(updatedUser);
-      alert(`Sucesso! Foram adicionados ${amount} créditos à sua conta.`);
-      setActiveTab('single');
+      // Abacatepay amount is in cents. Assuming price in plans might be formatted like "R$ 10,00"
+      // But we receive the credits amount here. Let's map credits to price or assume CC.
+      // Based on CreditShop.tsx, it just passes credits. We need price in cents.
+      const plans = authService.getPlans();
+      const plan = plans.find(p => p.credits === amount);
+      if (!plan) return;
+
+      // Extract numeric value from "R$ 10,00" -> 1000
+      const amountCents = Math.round(parseFloat(plan.price.replace('R$', '').replace(',', '.')) * 100);
+
+      const data = await abacatepayService.createPixPayment(amountCents);
+      if (data) {
+        setPixData(data);
+        setIsPixModalOpen(true);
+      } else {
+        setError("Erro ao gerar pagamento PIX. Tente novamente.");
+      }
     } catch (err) {
-      setError("Erro ao processar compra no banco de dados.");
-      setUser(user);
+      setError("Erro ao processar integração de pagamento.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -202,6 +221,14 @@ const App: React.FC = () => {
         onClose={() => setIsAuthModalOpen(false)}
         onSuccess={handleAuthSuccess}
       />
+
+      {pixData && (
+        <PixPaymentModal
+          isOpen={isPixModalOpen}
+          onClose={() => setIsPixModalOpen(false)}
+          pixData={pixData}
+        />
+      )}
 
       <footer className="mt-12 text-center text-slate-400 text-sm py-8 border-t border-amber-100/30">
         <p>© 2025 Genesis Kids - Criando Histórias Sagradas com Carinho</p>

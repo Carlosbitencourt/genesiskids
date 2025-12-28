@@ -46,3 +46,9 @@ export interface GenerationState {
   error: string | null;
   currentImage: GeneratedImage | null;
 }
+
+export interface PixData {
+  id: string;
+  brCode: string;
+  brCodeBase64: string;
+}
