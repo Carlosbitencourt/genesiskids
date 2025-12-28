@@ -152,32 +152,15 @@ const App: React.FC = () => {
   const handlePurchase = async (amount: number) => {
     if (!user) return;
 
-    setIsLoading(true);
-    try {
-      // Abacatepay amount is in cents. Assuming price in plans might be formatted like "R$ 10,00"
-      // But we receive the credits amount here. Let's map credits to price or assume CC.
-      // Based on CreditShop.tsx, it just passes credits. We need price in cents.
-      const plans = authService.getPlans();
-      const plan = plans.find(p => p.credits === amount);
-      if (!plan) return;
+    const plans = authService.getPlans();
+    const plan = plans.find(p => p.credits === amount);
+    if (!plan) return;
 
-      // Correctly convert "R$ 9,90" or "R$ 1.234,56" to cents (990 or 123456)
-      const numericPrice = parseFloat(plan.price.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
-      const amountCents = Math.round(numericPrice * 100);
+    const phoneNumber = "5571996820807";
+    const message = encodeURIComponent(`Quero recarregar na plataforma o valor de ${plan.price}`);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
-      const data = await abacatepayService.createPixPayment(amountCents, user, plan.name);
-      if (data) {
-        setPixData(data);
-        setPendingCredits(amount);
-        setIsPixModalOpen(true);
-      } else {
-        setError("Erro ao gerar pagamento PIX. Verifique se seu perfil tem as informações necessárias ou tente novamente.");
-      }
-    } catch (err) {
-      setError("Erro ao processar integração de pagamento.");
-    } finally {
-      setIsLoading(false);
-    }
+    window.open(whatsappUrl, '_blank');
   };
 
   const handleAuthSuccess = (loggedUser: User) => {
