@@ -33,14 +33,15 @@ export interface StoryScene {
   prompt: string;
 }
 
-export interface Story {
+export interface BibleStory {
   id: string;
   title: string;
-  scenes: StoryScene[];
+  content: string;
+  ageRange: string;
   createdAt: number;
 }
 
-export type AppTab = 'single' | 'story' | 'poster' | 'admin' | 'shop' | 'profile';
+export type AppTab = 'single' | 'story' | 'poster' | 'admin' | 'shop' | 'profile' | 'bible-story';
 
 export interface GenerationState {
   isLoading: boolean;

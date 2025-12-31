@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Sparkles, Heart, LogOut, User as UserIcon, BookOpen, Image as ImageIcon, LayoutTemplate, ShieldAlert, Coins, PlusCircle } from 'lucide-react';
+import { Sparkles, Heart, LogOut, User as UserIcon, BookOpen, Image as ImageIcon, LayoutTemplate, ShieldAlert, Coins, PlusCircle, FileText } from 'lucide-react';
 import { User, AppTab } from '../types';
 
 interface HeaderProps {
@@ -86,7 +86,15 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout, onLoginClick, activeTab
             }`}
         >
           <BookOpen size={18} />
-          <span className="xs:inline">Histórias</span>
+          <span className="xs:inline">Cenas</span>
+        </button>
+        <button
+          onClick={() => onTabChange('bible-story')}
+          className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 rounded-xl font-bold transition-all text-sm sm:text-base whitespace-nowrap ${activeTab === 'bible-story' ? 'bg-white text-amber-600 shadow-sm' : 'text-amber-700/60 hover:text-amber-700'
+            }`}
+        >
+          <FileText size={18} />
+          <span className="xs:inline">Contos IA</span>
         </button>
         <button
           onClick={() => onTabChange('poster')}

@@ -9,6 +9,7 @@ import PosterMode from './components/PosterMode';
 import AdminDashboard from './components/AdminDashboard';
 import CreditShop from './components/CreditShop';
 import UserProfile from './components/UserProfile';
+import BibleStoryAI from './components/BibleStoryAI';
 import { generateBiblicalAnimeImage } from './services/geminiService';
 import { authService } from './services/authService';
 import { abacatepayService } from './services/abacatepayService';
@@ -186,7 +187,7 @@ const App: React.FC = () => {
         onLoginClick={() => setIsAuthModalOpen(true)}
         activeTab={activeTab}
         onTabChange={(tab) => {
-          if (!user && (tab === 'story' || tab === 'poster' || tab === 'admin' || tab === 'shop' || tab === 'profile')) {
+          if (!user && (tab === 'story' || tab === 'poster' || tab === 'admin' || tab === 'shop' || tab === 'profile' || tab === 'bible-story')) {
             setIsAuthModalOpen(true);
             return;
           }
@@ -218,6 +219,16 @@ const App: React.FC = () => {
 
         {activeTab === 'story' && (
           <StoryMode
+            user={user}
+            onDeductCredits={deductCredits}
+            onStartLoading={() => { setIsLoading(true); setError(null); }}
+            onEndLoading={(err) => { setIsLoading(false); if (err) setError(err); }}
+            isLoading={isLoading}
+          />
+        )}
+
+        {activeTab === 'bible-story' && (
+          <BibleStoryAI
             user={user}
             onDeductCredits={deductCredits}
             onStartLoading={() => { setIsLoading(true); setError(null); }}

@@ -84,3 +84,20 @@ export const generateStoryScenes = async (storyIdea: string): Promise<{ scenes: 
     throw error;
   }
 };
+
+export const generateFullBibleStory = async (topic: string, ageRange: string): Promise<string> => {
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-1.5-flash',
+      contents: `Escreva uma história bíblica cativante sobre "${topic}" para crianças de ${ageRange} anos. 
+      A história deve ser apropriada para a idade, com uma linguagem simples e envolvente. 
+      Inclua uma pequena lição moral ou reflexão ao final.
+      Não use formatação markdown excessiva, apenas texto organizado em parágrafos.`,
+    });
+
+    return response.text;
+  } catch (error) {
+    console.error("Error generating full story:", error);
+    throw error;
+  }
+};
