@@ -207,14 +207,15 @@ const App: React.FC = () => {
               <Coins size={14} /> 1 crédito por arte
             </div>
             <InputForm onGenerate={handleGenerateSingle} isLoading={isLoading} />
-            {error && (
-              <div className="flex items-center gap-2 text-red-600 bg-red-50 border border-red-200 px-4 py-3 rounded-xl animate-bounce-slow">
-                <AlertCircle size={20} />
-                <span>{error}</span>
-              </div>
-            )}
             <ImageDisplay image={currentImage} isLoading={isLoading} />
           </>
+        )}
+
+        {error && (
+          <div className="flex items-center gap-2 text-red-600 bg-red-50 border border-red-200 px-4 py-3 rounded-xl animate-bounce-slow">
+            <AlertCircle size={20} />
+            <span>{error}</span>
+          </div>
         )}
 
         {activeTab === 'story' && (

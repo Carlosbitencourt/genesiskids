@@ -49,13 +49,27 @@ export const generateBiblicalAnimeImage = async (userPrompt: string, ageRange: s
   }
 };
 
+const extractText = (response: any): string => {
+  if (typeof response.text === 'function') {
+    try {
+      return response.text();
+    } catch (e) {
+      // Fallback if it's a function but fails
+    }
+  }
+  return response.text || response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+};
+
 export const generateStoryScenes = async (storyIdea: string): Promise<{ scenes: { title: string, prompt: string }[] }> => {
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: `Transforme esta ideia de história bíblica em 3 cenas visuais curtas para crianças. 
+      contents: [{
+        role: 'user', parts: [{
+          text: `Transforme esta ideia de história bíblica em 3 cenas visuais curtas para crianças. 
       Ideia: "${storyIdea}"
-      Retorne um JSON com um array de objetos chamado "scenes", cada um com "title" (título da cena) e "prompt" (descrição visual detalhada em inglês para um gerador de imagem).`,
+      Retorne um JSON com um array de objetos chamado "scenes", cada um com "title" (título da cena) e "prompt" (descrição visual detalhada em inglês para um gerador de imagem).` }]
+      }],
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -78,7 +92,7 @@ export const generateStoryScenes = async (storyIdea: string): Promise<{ scenes: 
       }
     });
 
-    return JSON.parse(response.text);
+    return JSON.parse(extractText(response));
   } catch (error) {
     console.error("Error generating scenes:", error);
     throw error;
@@ -88,14 +102,17 @@ export const generateStoryScenes = async (storyIdea: string): Promise<{ scenes: 
 export const generateFullBibleStory = async (topic: string, ageRange: string): Promise<string> => {
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash',
-      contents: `Escreva uma história bíblica cativante sobre "${topic}" para crianças de ${ageRange} anos. 
+      model: 'gemini-3-flash-preview',
+      contents: [{
+        role: 'user', parts: [{
+          text: `Escreva uma história bíblica cativante sobre "${topic}" para crianças de ${ageRange} anos. 
       A história deve ser apropriada para a idade, com uma linguagem simples e envolvente. 
       Inclua uma pequena lição moral ou reflexão ao final.
-      Não use formatação markdown excessiva, apenas texto organizado em parágrafos.`,
+      Não use formatação markdown excessiva, apenas texto organizado em parágrafos.` }]
+      }],
     });
 
-    return response.text;
+    return extractText(response);
   } catch (error) {
     console.error("Error generating full story:", error);
     throw error;
