@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, UserPlus, LogIn, Mail, Lock, User as UserIcon } from 'lucide-react';
+import { X, UserPlus, LogIn, Mail, Lock, User as UserIcon, Phone } from 'lucide-react';
 import { authService } from '../services/authService';
 import { User } from '../types';
 
@@ -12,7 +12,7 @@ interface AuthModalProps {
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
   const [error, setError] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
@@ -33,8 +33,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
           throw new Error('As senhas não coincidem.');
         }
         if (!formData.name) throw new Error('Por favor, digite seu nome.');
+        if (!formData.phone) throw new Error('Por favor, digite seu telefone.');
 
-        const user = await authService.signup(formData.name, formData.email, formData.password);
+        const user = await authService.signup(formData.name, formData.email, formData.password, formData.phone);
         onSuccess(user);
       }
     } catch (err: any) {
@@ -97,6 +98,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                 onChange={e => setFormData({ ...formData, email: e.target.value })}
               />
             </div>
+
+            {!isLogin && (
+              <div className="relative">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <input
+                  type="text"
+                  placeholder="Seu telefone (WhatsApp)"
+                  required
+                  className="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-amber-50 bg-white focus:border-amber-400 focus:ring-4 focus:ring-amber-100 outline-none transition-all text-slate-700"
+                  value={formData.phone}
+                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </div>
+            )}
 
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />

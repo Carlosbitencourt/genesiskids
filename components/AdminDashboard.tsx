@@ -4,7 +4,7 @@ import {
   Users, ShieldCheck, Trash2, Search, BarChart3,
   Settings, RefreshCw, UserCog, Mail, Calendar, Info,
   Edit3, X, Save, Coins, ArrowUpCircle, ArrowDownCircle, Filter,
-  ShoppingBag, Plus, Star, Zap, Shield
+  ShoppingBag, Plus, Star, Zap, Shield, MessageCircle, Phone
 } from 'lucide-react';
 import { User, CreditPlan } from '../types';
 import { authService } from '../services/authService';
@@ -42,6 +42,7 @@ const AdminDashboard: React.FC = () => {
         id: p.id,
         name: p.name,
         email: p.email,
+        phone: p.phone,
         role: p.role,
         credits: p.credits,
         createdAt: new Date(p.created_at).getTime()
@@ -273,6 +274,11 @@ const AdminDashboard: React.FC = () => {
                               <div className="text-xs text-slate-400 flex items-center gap-1">
                                 <Mail size={12} /> {user.email}
                               </div>
+                              {user.phone && (
+                                <div className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+                                  <Phone size={12} /> {user.phone}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </td>
@@ -289,6 +295,17 @@ const AdminDashboard: React.FC = () => {
                         </td>
                         <td className="px-4 py-4 rounded-r-2xl border-y border-r border-amber-50 text-right">
                           <div className="flex justify-end gap-1">
+                            {user.phone && (
+                              <a
+                                href={`https://wa.me/${user.phone.replace(/\D/g, '')}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all"
+                                title="Falar no WhatsApp"
+                              >
+                                <MessageCircle size={18} />
+                              </a>
+                            )}
                             <button
                               onClick={() => setEditingUser(user)}
                               className="p-2 text-slate-400 hover:text-amber-500 hover:bg-amber-50 rounded-xl transition-all"
@@ -556,6 +573,15 @@ const AdminDashboard: React.FC = () => {
                     className="w-full p-3 rounded-xl border-2 border-slate-50 bg-white focus:border-amber-400 outline-none transition-all font-bold text-slate-700"
                     value={editingUser.email}
                     onChange={e => setEditingUser({ ...editingUser, email: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">Telefone (WhatsApp)</label>
+                  <input
+                    type="text"
+                    className="w-full p-3 rounded-xl border-2 border-slate-50 bg-white focus:border-amber-400 outline-none transition-all font-bold text-slate-700"
+                    value={editingUser.phone || ''}
+                    onChange={e => setEditingUser({ ...editingUser, phone: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">

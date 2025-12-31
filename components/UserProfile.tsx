@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { User as UserIcon, Mail, Shield, Calendar, Coins, Save, CheckCircle2, AlertCircle } from 'lucide-react';
+import { User as UserIcon, Mail, Shield, Calendar, Coins, Save, CheckCircle2, AlertCircle, Phone } from 'lucide-react';
 import { User } from '../types';
 import { authService } from '../services/authService';
 
@@ -11,6 +11,7 @@ interface UserProfileProps {
 
 const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate }) => {
     const [name, setName] = useState(user.name);
+    const [phone, setPhone] = useState(user.phone || '');
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
@@ -22,7 +23,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate }) => {
         setMessage(null);
 
         try {
-            const updatedUser = { ...user, name: name.trim() };
+            const updatedUser = { ...user, name: name.trim(), phone: phone.trim() };
             await authService.updateUser(updatedUser);
             onUpdate(updatedUser);
             setMessage({ type: 'success', text: 'Perfil atualizado com sucesso!' });
@@ -62,6 +63,21 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate }) => {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="Seu nome"
+                                className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-amber-50 bg-white focus:border-amber-400 focus:ring-4 focus:ring-amber-100 outline-none transition-all text-lg text-slate-700 font-medium"
+                                disabled={isLoading}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-600 ml-2">Telefone (WhatsApp)</label>
+                        <div className="relative">
+                            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                            <input
+                                type="text"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                placeholder="Seu WhatsApp"
                                 className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-amber-50 bg-white focus:border-amber-400 focus:ring-4 focus:ring-amber-100 outline-none transition-all text-lg text-slate-700 font-medium"
                                 disabled={isLoading}
                             />
@@ -112,7 +128,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate }) => {
 
                     <button
                         type="submit"
-                        disabled={isLoading || name === user.name || !name.trim()}
+                        disabled={isLoading || (name === user.name && phone === (user.phone || '')) || !name.trim()}
                         className="w-full py-4 bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white rounded-2xl font-bold text-lg shadow-lg shadow-amber-200 transition-all transform active:scale-95 disabled:opacity-50 disabled:grayscale disabled:scale-100 flex items-center justify-center gap-2"
                     >
                         {isLoading ? 'Salvando...' : (

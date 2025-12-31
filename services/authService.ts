@@ -24,12 +24,12 @@ export const authService = {
     localStorage.setItem(PLANS_KEY, JSON.stringify(plans));
   },
 
-  signup: async (name: string, email: string, password: string): Promise<User> => {
+  signup: async (name: string, email: string, password: string, phone: string): Promise<User> => {
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { name }
+        data: { name, phone }
       }
     });
 
@@ -50,6 +50,7 @@ export const authService = {
       id: profile.id,
       name: profile.name,
       email: profile.email,
+      phone: profile.phone,
       role: profile.role,
       credits: profile.credits,
       createdAt: new Date(profile.created_at).getTime()
@@ -77,6 +78,7 @@ export const authService = {
       id: profile.id,
       name: profile.name,
       email: profile.email,
+      phone: profile.phone,
       role: profile.role,
       credits: profile.credits,
       createdAt: new Date(profile.created_at).getTime()
@@ -89,7 +91,8 @@ export const authService = {
       .update({
         name: updatedUser.name,
         role: updatedUser.role,
-        credits: updatedUser.credits
+        credits: updatedUser.credits,
+        phone: updatedUser.phone
       })
       .eq('id', updatedUser.id);
 
@@ -126,6 +129,7 @@ export const authService = {
       id: profile.id,
       name: profile.name,
       email: profile.email,
+      phone: profile.phone,
       role: profile.role,
       credits: profile.credits,
       createdAt: new Date(profile.created_at).getTime()
