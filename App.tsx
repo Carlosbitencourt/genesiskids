@@ -84,9 +84,14 @@ const App: React.FC = () => {
   };
 
   const addToGallery = (img: GeneratedImage) => {
-    const newGallery = [img, ...gallery].slice(0, 20);
-    setGallery(newGallery);
-    localStorage.setItem('genesis_kids_gallery', JSON.stringify(newGallery));
+    try {
+      const newGallery = [img, ...gallery].slice(0, 10);
+      setGallery(newGallery);
+      localStorage.setItem('genesis_kids_gallery', JSON.stringify(newGallery));
+    } catch (err) {
+      console.warn("Não foi possível salvar na galeria (espaço insuficiente no navegador)");
+      // Only keep in state if localStorage fails
+    }
   };
 
   const deductCredits = async (amount: number): Promise<boolean> => {
@@ -143,7 +148,8 @@ const App: React.FC = () => {
         setError("Não foi possível gerar a imagem. Seu crédito foi devolvido.");
       }
     } catch (err: any) {
-      setError("Erro ao conectar com a IA. Tente novamente mais tarde.");
+      console.error("Erro na geração:", err);
+      setError("Erro ao processar imagem. Verifique sua conexão e tente novamente.");
     } finally {
       setIsLoading(false);
     }
