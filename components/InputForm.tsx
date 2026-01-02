@@ -8,17 +8,17 @@ interface InputFormProps {
 }
 
 const ageRanges = [
-  { id: '1-3', label: '1 - 3 anos' },
-  { id: '3-5', label: '3 - 5 anos' },
-  { id: '5-8', label: '5 - 8 anos' },
-  { id: '8-10', label: '8 - 10 anos' },
-  { id: '10-13', label: '10 - 13 anos' },
-  { id: '13-15', label: '13 - 15 anos' },
+  { id: '0-12m', label: '0 - 12 meses' },
+  { id: '1-3', label: '01 - 3 anos' },
+  { id: '4-6', label: '04 - 06 anos' },
+  { id: '7-9', label: '07 - 09 anos' },
+  { id: '10-12', label: '10 - 12 anos' },
+  { id: '13-16', label: '13 - 16 anos' },
 ];
 
 const InputForm: React.FC<InputFormProps> = ({ onGenerate, isLoading }) => {
   const [prompt, setPrompt] = useState('');
-  const [selectedAge, setSelectedAge] = useState<string>('5-8');
+  const [selectedAge, setSelectedAge] = useState<string>('4-6');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,32 +66,32 @@ const InputForm: React.FC<InputFormProps> = ({ onGenerate, isLoading }) => {
 
         {/* Age Selection */}
         <div className="glass-panel p-4 rounded-3xl border-amber-100/50">
-            <div className="flex items-center gap-2 mb-3 text-slate-600 px-2">
-                <Users size={18} className="text-amber-500"/>
-                <span className="font-bold text-sm uppercase tracking-wider">Idade das Crianças</span>
-            </div>
-            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                {ageRanges.map((range) => (
-                    <button
-                        key={range.id}
-                        type="button"
-                        onClick={() => setSelectedAge(range.id)}
-                        disabled={isLoading}
-                        className={`
+          <div className="flex items-center gap-2 mb-3 text-slate-600 px-2">
+            <Users size={18} className="text-amber-500" />
+            <span className="font-bold text-sm uppercase tracking-wider">Idade das Crianças</span>
+          </div>
+          <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+            {ageRanges.map((range) => (
+              <button
+                key={range.id}
+                type="button"
+                onClick={() => setSelectedAge(range.id)}
+                disabled={isLoading}
+                className={`
                             px-4 py-2 rounded-full text-sm font-bold transition-all transform hover:scale-105 active:scale-95
-                            ${selectedAge === range.id 
-                                ? 'bg-amber-400 text-white shadow-lg shadow-amber-200 scale-105 ring-2 ring-amber-200 ring-offset-2' 
-                                : 'bg-white text-slate-500 hover:bg-amber-50 border border-slate-100'
-                            }
+                            ${selectedAge === range.id
+                    ? 'bg-amber-400 text-white shadow-lg shadow-amber-200 scale-105 ring-2 ring-amber-200 ring-offset-2'
+                    : 'bg-white text-slate-500 hover:bg-amber-50 border border-slate-100'
+                  }
                         `}
-                    >
-                        {range.label}
-                    </button>
-                ))}
-            </div>
+              >
+                {range.label}
+              </button>
+            ))}
+          </div>
         </div>
       </form>
-      
+
       {/* Suggestions */}
       <div className="flex flex-wrap gap-3 justify-center">
         {suggestions.map((s, i) => (

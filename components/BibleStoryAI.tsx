@@ -12,17 +12,17 @@ interface BibleStoryAIProps {
 }
 
 const ageRanges = [
-    { id: '1-3', label: '1 - 3 anos' },
-    { id: '3-5', label: '3 - 5 anos' },
-    { id: '5-8', label: '5 - 8 anos' },
-    { id: '8-10', label: '8 - 10 anos' },
-    { id: '10-13', label: '10 - 13 anos' },
-    { id: '13-15', label: '13 - 15 anos' },
+    { id: '0-12m', label: '0 - 12 meses' },
+    { id: '1-3', label: '01 - 3 anos' },
+    { id: '4-6', label: '04 - 06 anos' },
+    { id: '7-9', label: '07 - 09 anos' },
+    { id: '10-12', label: '10 - 12 anos' },
+    { id: '13-16', label: '13 - 16 anos' },
 ];
 
 const BibleStoryAI: React.FC<BibleStoryAIProps> = ({ user, onDeductCredits, onStartLoading, onEndLoading, isLoading }) => {
     const [topic, setTopic] = useState('');
-    const [selectedAge, setSelectedAge] = useState('5-8');
+    const [selectedAge, setSelectedAge] = useState('4-6');
     const [currentStory, setCurrentStory] = useState<BibleStory | null>(null);
     const [copied, setCopied] = useState(false);
 

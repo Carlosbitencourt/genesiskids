@@ -8,12 +8,12 @@ const ai = new GoogleGenAI({ apiKey });
 
 const getStyleDescription = (ageRange: string) => {
   switch (ageRange) {
-    case '1-3': return "Style: Baby cartoon, extremely soft rounded shapes, pastel primary colors, simple backgrounds, Teletubbies vibe.";
-    case '3-5': return "Style: Toddler 3D animation, big eyes, bright colors, friendly atmosphere, Paw Patrol visual complexity.";
-    case '5-8': return "Style: Disney/Pixar 3D animation style, vibrant, expressive, magical lighting.";
-    case '8-10': return "Style: 3D anime, clear details, heroic poses, engaging action.";
-    case '10-13': return "Style: Pre-teen 3D anime, cool aesthetics, detailed environments, Kingdom Hearts style.";
-    case '13-15': return "Style: High quality 3D anime render, dramatic lighting, detailed character design, Genshin Impact aesthetic.";
+    case '0-12m': return "Style: Baby cartoon, extremely soft rounded shapes, pastel colors, very simple backgrounds, high contrast for infants.";
+    case '1-3': return "Style: Toddler 3D animation, big eyes, bright primary colors, friendly atmosphere, Paw Patrol visual complexity.";
+    case '4-6': return "Style: Disney/Pixar 3D animation style, vibrant, expressive, magical lighting, cheerful.";
+    case '7-9': return "Style: 3D anime, clear details, heroic and adventurous poses, engaging action.";
+    case '10-12': return "Style: Pre-teen 3D anime, cool aesthetics, detailed environments, Kingdom Hearts style.";
+    case '13-16': return "Style: High quality 3D anime render, more realistic proportions but still anime style, dramatic lighting, detailed character design, Genshin Impact aesthetic.";
     default: return "Style: Child-friendly 3D anime, Disney/Pixar style.";
   }
 };

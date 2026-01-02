@@ -14,7 +14,7 @@ interface StoryModeProps {
 
 const StoryMode: React.FC<StoryModeProps> = ({ user, onDeductCredits, onStartLoading, onEndLoading, isLoading }) => {
   const [prompt, setPrompt] = useState('');
-  const [ageRange, setAgeRange] = useState('5-8');
+  const [ageRange, setAgeRange] = useState('4-6');
   const [currentStory, setCurrentStory] = useState<Story | null>(null);
   const [generationProgress, setGenerationProgress] = useState(0);
 
@@ -91,7 +91,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ user, onDeductCredits, onStartLoa
 
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex gap-2 p-1 bg-amber-50 rounded-2xl overflow-x-auto max-w-full">
-              {['1-3', '5-8', '10-15'].map((range) => (
+              {['0-12m', '1-3', '4-6', '7-9', '10-12', '13-16'].map((range) => (
                 <button
                   key={range}
                   type="button"
@@ -99,7 +99,7 @@ const StoryMode: React.FC<StoryModeProps> = ({ user, onDeductCredits, onStartLoa
                   className={`px-4 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${ageRange === range ? 'bg-amber-400 text-white shadow-md' : 'text-slate-500 hover:bg-white'
                     }`}
                 >
-                  {range} anos
+                  {range === '0-12m' ? '0-12 meses' : `${range} anos`}
                 </button>
               ))}
             </div>
