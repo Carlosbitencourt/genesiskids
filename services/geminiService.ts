@@ -118,3 +118,27 @@ export const generateFullBibleStory = async (topic: string, ageRange: string): P
     throw error;
   }
 };
+export const summarizeStoryFromImage = async (base64Image: string): Promise<string> => {
+  try {
+    // Extract base64 data and mime type
+    const [mimePart, dataPart] = base64Image.split(',');
+    const mimeType = mimePart.match(/:(.*?);/)?.[1] || 'image/png';
+    const data = dataPart;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: [{
+        role: 'user',
+        parts: [
+          { text: "Analise esta imagem e escreva um resumo cativante da história bíblica ou do tema cristão que ela representa. Se for uma cena genérica, crie uma breve história inspiradora baseada nos elementos visuais. O texto deve ser amigável para crianças, organizado em parágrafos e sem formatação markdown excessiva." },
+          { inlineData: { mimeType, data } }
+        ]
+      }],
+    });
+
+    return extractText(response);
+  } catch (error) {
+    console.error("Error summarizing story from image:", error);
+    throw error;
+  }
+};

@@ -41,7 +41,7 @@ export interface BibleStory {
   createdAt: number;
 }
 
-export type AppTab = 'single' | 'story' | 'poster' | 'admin' | 'shop' | 'profile' | 'bible-story';
+export type AppTab = 'single' | 'story' | 'poster' | 'admin' | 'shop' | 'profile' | 'bible-story' | 'summarize';
 
 export interface GenerationState {
   isLoading: boolean;
