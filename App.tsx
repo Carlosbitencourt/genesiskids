@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import InputForm from './components/InputForm';
 import ImageDisplay from './components/ImageDisplay';
@@ -30,6 +30,13 @@ const App: React.FC = () => {
   const [pixData, setPixData] = useState<PixData | null>(null);
   const [isPixModalOpen, setIsPixModalOpen] = useState(false);
   const [pendingCredits, setPendingCredits] = useState<number | null>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToResults = () => {
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
 
   useEffect(() => {
     const initSession = async () => {
@@ -130,6 +137,7 @@ const App: React.FC = () => {
     setIsLoading(true);
     setError(null);
     setCurrentImage(null);
+    scrollToResults();
 
     try {
       const base64Image = await generateBiblicalAnimeImage(prompt, ageRange);
@@ -208,7 +216,9 @@ const App: React.FC = () => {
               <Coins size={14} /> 1 crédito por arte
             </div>
             <InputForm onGenerate={handleGenerateSingle} isLoading={isLoading} />
-            <ImageDisplay image={currentImage} isLoading={isLoading} />
+            <div ref={resultsRef} className="w-full flex flex-col items-center gap-8">
+              <ImageDisplay image={currentImage} isLoading={isLoading} />
+            </div>
           </>
         )}
 
@@ -223,7 +233,7 @@ const App: React.FC = () => {
           <StoryMode
             user={user}
             onDeductCredits={deductCredits}
-            onStartLoading={() => { setIsLoading(true); setError(null); }}
+            onStartLoading={() => { setIsLoading(true); setError(null); scrollToResults(); }}
             onEndLoading={(err) => { setIsLoading(false); if (err) setError(err); }}
             isLoading={isLoading}
           />
@@ -233,7 +243,7 @@ const App: React.FC = () => {
           <BibleStoryAI
             user={user}
             onDeductCredits={deductCredits}
-            onStartLoading={() => { setIsLoading(true); setError(null); }}
+            onStartLoading={() => { setIsLoading(true); setError(null); scrollToResults(); }}
             onEndLoading={(err) => { setIsLoading(false); if (err) setError(err); }}
             isLoading={isLoading}
           />
@@ -243,7 +253,7 @@ const App: React.FC = () => {
           <StorySummarizer
             user={user}
             onDeductCredits={deductCredits}
-            onStartLoading={() => { setIsLoading(true); setError(null); }}
+            onStartLoading={() => { setIsLoading(true); setError(null); scrollToResults(); }}
             onEndLoading={(err) => { setIsLoading(false); if (err) setError(err); }}
             isLoading={isLoading}
           />
